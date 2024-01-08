@@ -12,7 +12,6 @@ namespace Blog.DATA.Table
 		[Key]
 		public int BlogCategoryContentID { get; set; }
 		public Nullable<int> BlogCategoryID { get; set; }
-		public Nullable<int> LangID { get; set; }
 		public string? BlogCategorySubName { get; set; }
 		public string? Title { get; set; }
 		public string? Description { get; set; }

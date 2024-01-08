@@ -12,9 +12,9 @@ namespace Blog.DATA.Table
 		[Key]
 		public int BlogContentID { get; set; }
 		public Nullable<int> BlogID { get; set; }
-		public Nullable<int> LangID { get; set; }
 		public string? BlogSubName { get; set; }
-		public string? BlogContent { get; set; }
+        public string? ShortText { get; set; }
+        public string? BlogContent { get; set; }
 		public string? Title { get; set; }
 		public string? Description { get; set; }
 		public string? Url { get; set; }

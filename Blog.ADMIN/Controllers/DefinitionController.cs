@@ -21,7 +21,8 @@ namespace Blog.ADMIN.Controllers
         [Route("blog")]
         public async Task<IActionResult> Blog()
         {
-            return await Task.FromResult(View());
+            var blogList = _definitionDB._BlogList().OrderByDescending(x=> x.BlogID).ToList();
+            return await Task.FromResult(View(Tuple.Create(blogList)));
         }
         #endregion
 
