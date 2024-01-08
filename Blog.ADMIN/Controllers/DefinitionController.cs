@@ -74,7 +74,7 @@ namespace Blog.ADMIN.Controllers
 
 						/// url yapılacak
 					}
-					else return await Task.FromResult("Blog Alt Başlık Boş Olamaz.");
+					else return await Task.FromResult("Blog Content Başlık Boş Olamaz.");
 
 					LogSave(blogID, "Definition", "BlogCreate");
 					return "___";
