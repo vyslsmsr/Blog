@@ -14,7 +14,7 @@
 	<h1 class="h3 mb-4 text-gray-800">Blog Listesi</h1>
 	<div class="card shadow mb-4">
 		<div class="card-header py-3 page-title-btn">
-			<a href="" class="btn btn-primary"><i class="fas fa-plus"></i> Blog Ekle</a>
+			<a href="/blog-create" class="btn btn-primary"><i class="fas fa-plus"></i> Blog Ekle</a>
 		</div>
 		<div class="card-body">
 			<div class="table-responsive">
@@ -41,9 +41,11 @@
 									<td>@item.BlogSubName</td>
 									<td>Edinburgh</td>
 									<td>@item.BlogCategorySubName</td>
-									<div class="form-check form-switch">
-										<input class="form-check-input" type="checkbox" role="switch" onchange="blogStatus(@item.BlogID)" id="flexSwitchCheckChecked" @status>
-									</div>
+									<td>
+										<div class="form-check form-switch">
+											<input class="form-check-input" type="checkbox" role="switch" onchange="blogStatus(@item.BlogID)" id="flexSwitchCheckChecked" @status>
+										</div>
+									</td>
 									<td>@Convert.ToDateTime(item.RegisterDate).ToShortDateString()</td>
 									<td>$320,800</td>
 								</tr>
@@ -62,10 +64,6 @@
 		</div>
 	</div>
 </div>
-
-
-
-
 
 @section scripts {
 

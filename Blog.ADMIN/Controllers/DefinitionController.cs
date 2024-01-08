@@ -24,14 +24,20 @@ namespace Blog.ADMIN.Controllers
             var blogList = _definitionDB._BlogList().OrderByDescending(x=> x.BlogID).ToList();
             return await Task.FromResult(View(Tuple.Create(blogList)));
         }
-        #endregion
+		#endregion
 
 
+		#region Blog Create
+		[Route("blog-create")]
+		public async Task<IActionResult> BlogCreate()
+		{
+			return await Task.FromResult(View());
+		}
+		#endregion
 
 
+		#endregion
 
-        #endregion
 
-
-    }
+	}
 }
