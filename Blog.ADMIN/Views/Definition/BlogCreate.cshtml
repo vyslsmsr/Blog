@@ -100,17 +100,10 @@
 @section scripts {
 
 	<script src='https://cdn.ckeditor.com/4.12.1/standard-all/ckeditor.js'></script>
+	<script src="/assets/js/ckeditor.js"></script>
 
 	<script>
-		var editor = CKEDITOR.replace('ckeditor', {
-			extraPlugins: 'dialog,colordialog,colorbutton,colordialog'
-		});
-
-
-		editor.on('instanceReady', function (evt) {
-			evt.editor.addCommand('h2', new CKEDITOR.styleCommand(new CKEDITOR.style({ element: 'h2' })));
-			evt.editor.setKeystroke(CKEDITOR.CTRL + 50 /*U*/, 'h2');
-		});
+	
 
 	</script>
 }

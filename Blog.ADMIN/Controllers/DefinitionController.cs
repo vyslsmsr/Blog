@@ -1,5 +1,7 @@
 ﻿using Blog.DATA.Context;
+using Blog.DATA.Table;
 using Microsoft.AspNetCore.Mvc;
+using static Blog.DATA.Validation._Definition._Blog;
 
 namespace Blog.ADMIN.Controllers
 {
@@ -26,7 +28,6 @@ namespace Blog.ADMIN.Controllers
         }
 		#endregion
 
-
 		#region Blog Create
 		[Route("blog-create")]
 		public async Task<IActionResult> BlogCreate()
@@ -35,6 +36,60 @@ namespace Blog.ADMIN.Controllers
 		}
 		#endregion
 
+		#region Blog Create Model
+		[Route("blog-create")]
+		[HttpPost]		
+		public async Task<string> BlogCreate(BlogModel model)
+		{
+			try
+			{
+				var mainTbl = _definitionDB.tblBlogMain.FirstOrDefault(x => x.BlogName == model.blogName);
+
+				if(mainTbl == null)
+				{
+					tblBlogMain blogMainTbl = new tblBlogMain();
+					blogMainTbl.BlogName = model.blogName;
+					blogMainTbl.BlogCategoryID = model.blogCategoryID;
+					blogMainTbl.Status = true;
+					blogMainTbl.Deleted = false;
+					blogMainTbl.RegisterDate = DateTime.Now;
+
+					_definitionDB.tblBlogMain.Add(blogMainTbl);
+					_definitionDB.SaveChanges();
+
+					int blogID = _definitionDB.tblBlogMain.Max(x => x.BlogID);
+
+					if(model.blogSubName != null)
+					{
+						tblBlogContent cntTbl = new tblBlogContent();
+						cntTbl.BlogSubName = model.blogSubName;
+						cntTbl.ShortText = model.shortText;
+						cntTbl.BlogContent = model.blogContent;
+						cntTbl.Title = model.title;
+						cntTbl.Description = model.description;
+						cntTbl.Url = model.url;
+
+						_definitionDB.tblBlogContent.Add(cntTbl);
+						_definitionDB.SaveChanges();
+
+						/// url yapılacak
+					}
+					else return await Task.FromResult("Blog Alt Başlık Boş Olamaz.");
+
+					LogSave(blogID, "Definition", "BlogCreate");
+					return "___";
+				}
+				else return await Task.FromResult("Bu Blog Daha Önce Eklenmiştir.");
+
+			}
+			catch (Exception ex)
+			{
+				ExceptionSave(ex.Message, "Definition", "BlogCreate");
+				return await Task.FromResult("Beklenmedik bir hata Oluştu. Sistem Yönbeticisine Başvurunuz");
+			}
+			
+		}
+		#endregion
 
 		#endregion
 
