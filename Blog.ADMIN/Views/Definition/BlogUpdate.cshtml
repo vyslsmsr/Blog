@@ -1,8 +1,8 @@
-﻿@{
+﻿@model tblBlogMain
 
+@{
+	var blogContent = injectHelper.BlogContent(Model.BlogID);
 }
-
-
 
 @section Styles {
 	<link href="/assets/css/custom.css?v=2" rel="stylesheet" />
@@ -15,13 +15,13 @@
 			<a href="/blogs" class="btn btn-primary"><i class="fas fa-undo-alt"></i> Geri Dön</a>
 		</div>
 		<div class="card-body">
-			<form action="javascript:postCreate()" method="post" autocomplete="off">
+			<form action="javascript:postCreate(@Model.BlogID)" method="post" autocomplete="off">
 				<div class="row mt-3">
 					<div class="col-2">
 						<label for="blogName" class="col-form-label">Blog Adı</label>
 					</div>
 					<div class="col-10">
-						<input type="text" id="blogName" class="form-control" aria-describedby="Blog Adı" maxlength="250" required>
+						<input type="text" id="blogName" class="form-control" aria-describedby="Blog Adı" maxlength="250" value="@Model.BlogName" required>
 					</div>
 				</div>
 				<div class="row mt-3">
@@ -42,7 +42,7 @@
 						<label for="blogSubName" class="col-form-label">Blog Adı</label>
 					</div>
 					<div class="col-10">
-						<input type="text" id="blogSubName" class="form-control" aria-describedby="Blog Adı" maxlength="250" required>
+						<input type="text" id="blogSubName" class="form-control" aria-describedby="Blog Adı" maxlength="250" value="@blogContent.BlogSubName" required>
 					</div>
 				</div>
 				<div class="row mt-3">
@@ -50,7 +50,7 @@
 						<label for="shortText" class="col-form-label">Blog Kısa Açıklama</label>
 					</div>
 					<div class="col-10">
-						<textarea type="text" id="shortText" class="form-control" aria-describedby="Blog Kısa Açıklama" maxlength="1000" required></textarea>
+						<textarea type="text" id="shortText" class="form-control" aria-describedby="Blog Kısa Açıklama" maxlength="1000" required>@Html.Raw(blogContent.ShortText)</textarea>
 					</div>
 				</div>
 				<div class="row mt-3">
@@ -58,7 +58,7 @@
 						<label for="shortText" class="col-form-label">Blog Açıklama</label>
 					</div>
 					<div class="col-10">
-						<textarea name="ckeditor" id="blogContent" aria-describedby="Blog Açıklama" required></textarea>
+						<textarea name="ckeditor" id="blogContent" aria-describedby="Blog Açıklama" required>@blogContent.BlogContent</textarea>
 					</div>
 				</div>
 				<div class="row mt-3">
@@ -66,7 +66,7 @@
 						<label for="title" class="col-form-label">Title</label>
 					</div>
 					<div class="col-10">
-						<input type="text" id="title" class="form-control" aria-describedby="Title" maxlength="250" required />
+						<input type="text" id="title" class="form-control" aria-describedby="Title" maxlength="250" value="@blogContent.Title" required />
 					</div>
 				</div>
 				<div class="row mt-3">
@@ -74,7 +74,7 @@
 						<label for="description" class="col-form-label">Description</label>
 					</div>
 					<div class="col-10">
-						<input type="text" id="description" class="form-control" aria-describedby="Description" maxlength="250" required />
+						<input type="text" id="description" class="form-control" aria-describedby="Description" maxlength="250" value="@blogContent.Description" required />
 					</div>
 				</div>
 				<div class="row mt-3">
@@ -82,13 +82,13 @@
 						<label for="url" class="col-form-label">Url</label>
 					</div>
 					<div class="col-10">
-						<input type="text" id="url" class="form-control" aria-describedby="Url" maxlength="250" required disabled/>
+						<input type="text" id="url" class="form-control" aria-describedby="Url" maxlength="250" value="@blogContent.Url" required disabled />
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-12">
 						<div class="form-submit-btn">
-							<button type="submit" class="btn btn-success">Kaydet</button>
+							<button type="submit" class="btn btn-success">Güncelle</button>
 						</div>
 					</div>
 				</div>
@@ -110,7 +110,7 @@
 		});
 
 
-		function postCreate() {
+		function postCreate(blogID) {
 			let blogName = $("#blogName").val();
 			let blogCategory = $("#blogCategory").val();
 			let blogSubName = $("#blogSubName").val();
@@ -129,6 +129,7 @@
 			}
 
 			let postData = {
+				blogID: blogID,
 				blogName: blogName,
 				blogCategoryID: blogCategory,
 				blogSubName: blogSubName,
@@ -141,8 +142,8 @@
 			
 			$.ajax({
 				type: "POST",
-				url: "/blog-create",
-				data: postData ,
+				url: "/blog-update",
+				data: postData,
 				datatype: "html",
 				success: function (data) {
 					if (data.includes("___")) {

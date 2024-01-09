@@ -1,4 +1,5 @@
 ﻿using Blog.DATA.Context;
+using Blog.DATA.Helper;
 using Blog.DATA.Table;
 using Microsoft.AspNetCore.Mvc;
 using static Blog.DATA.Validation._Definition._Blog;
@@ -20,7 +21,7 @@ namespace Blog.ADMIN.Controllers
         #region Blog
 
         #region Blog List
-        [Route("blog")]
+        [Route("blogs")]
         public async Task<IActionResult> Blog()
         {
             var blogList = _definitionDB._BlogList().OrderByDescending(x=> x.BlogID).ToList();
@@ -61,18 +62,20 @@ namespace Blog.ADMIN.Controllers
 
 					if(model.blogSubName != null)
 					{
+						string url = GlobalFunction.TextLinkReturning(model.url);
+
 						tblBlogContent cntTbl = new tblBlogContent();
+						cntTbl.BlogID = blogID;
 						cntTbl.BlogSubName = model.blogSubName;
 						cntTbl.ShortText = model.shortText;
 						cntTbl.BlogContent = model.blogContent;
 						cntTbl.Title = model.title;
 						cntTbl.Description = model.description;
-						cntTbl.Url = model.url;
+						cntTbl.Url = url;
 
 						_definitionDB.tblBlogContent.Add(cntTbl);
 						_definitionDB.SaveChanges();
 
-						/// url yapılacak
 					}
 					else return await Task.FromResult("Blog Content Başlık Boş Olamaz.");
 
@@ -88,6 +91,68 @@ namespace Blog.ADMIN.Controllers
 				return await Task.FromResult("Beklenmedik bir hata Oluştu. Sistem Yönbeticisine Başvurunuz");
 			}
 			
+		}
+		#endregion
+
+		#region Blog Update
+		[Route("blog-update")]
+		public async Task<IActionResult> BlogUpdate(int blogID)
+		{
+			var getBlog = _definitionDB.tblBlogMain.FirstOrDefault(x=> x.BlogID == blogID);
+			return await Task.FromResult(View(getBlog));
+		}
+		#endregion
+
+		#region Blog Create Model
+		[Route("blog-update")]
+		[HttpPost]
+		public async Task<string> BlogUpdate(BlogModel model)
+		{
+			try
+			{
+				var mainTbl = _definitionDB.tblBlogMain.FirstOrDefault(x => x.BlogID == model.blogID);
+
+				if (mainTbl != null)
+				{
+					mainTbl.BlogName = model.blogName;
+					mainTbl.BlogCategoryID = model.blogCategoryID;
+
+					_definitionDB.SaveChanges();
+
+					if (model.blogSubName != null)
+					{
+
+						var cntTbl = _definitionDB.tblBlogContent.FirstOrDefault(x => x.BlogID == model.blogID);
+
+						if (cntTbl != null)
+						{
+							string url = GlobalFunction.TextLinkReturning(model.url);
+
+							cntTbl.BlogID = model.blogID;
+							cntTbl.BlogSubName = model.blogSubName;
+							cntTbl.ShortText = model.shortText;
+							cntTbl.BlogContent = model.blogContent;
+							cntTbl.Title = model.title;
+							cntTbl.Description = model.description;
+							cntTbl.Url = url;
+
+							_definitionDB.SaveChanges();
+						}
+					}
+					else return await Task.FromResult("Blog Content Başlık Boş Olamaz.");
+
+					LogSave(model.blogID, "Definition", "BlogUpdate");
+					return "___";
+				}
+				else return await Task.FromResult("Bu Blog Daha Önce Eklenmiştir.");
+
+			}
+			catch (Exception ex)
+			{
+				ExceptionSave(ex.Message, "Definition", "BlogUpdate");
+				return await Task.FromResult("Beklenmedik bir hata Oluştu. Sistem Yönbeticisine Başvurunuz");
+			}
+
 		}
 		#endregion
 

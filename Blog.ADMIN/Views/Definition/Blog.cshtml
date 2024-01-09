@@ -42,12 +42,15 @@
 									<td>Edinburgh</td>
 									<td>@item.BlogCategorySubName</td>
 									<td>
-										<div class="form-check form-switch">
+										<div class="form-switch">
 											<input class="form-check-input" type="checkbox" role="switch" onchange="blogStatus(@item.BlogID)" id="flexSwitchCheckChecked" @status>
 										</div>
 									</td>
 									<td>@Convert.ToDateTime(item.RegisterDate).ToShortDateString()</td>
-									<td>$320,800</td>
+									<td>
+										<a href="/blog-update?blogID=@item.BlogID" class="btn btn-success fnt-size" title="Güncelle"><i class="fas fa-pen"></i></a>
+										<a href="javascript:void(0);" class="btn btn-danger fnt-size" title="Sil"><i class="fas fa-trash"></i></a>
+									</td>
 								</tr>
 								iRow++;
 							}
