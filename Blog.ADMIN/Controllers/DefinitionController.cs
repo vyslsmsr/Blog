@@ -1,6 +1,7 @@
 ﻿using Blog.DATA.Context;
 using Blog.DATA.Helper;
 using Blog.DATA.Table;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using static Blog.DATA.Validation._Definition._Blog;
 
@@ -154,6 +155,119 @@ namespace Blog.ADMIN.Controllers
 			}
 
 		}
+		#endregion
+
+		#region Blog Status
+		[Route("blog-status")]
+		public async Task<string> BlogStatus(int blogID)
+		{
+			try
+			{
+				var getBlog = _definitionDB.tblBlogMain.FirstOrDefault(x=> x.BlogID == blogID);
+
+				if(getBlog != null)
+				{
+					getBlog.Status = getBlog.Status == true ? false:true;
+					_definitionDB.SaveChanges();
+
+					LogSave(blogID, "Definition", "BlogStatus");
+					return "___";
+				}
+				else return await Task.FromResult("Bu Blog Bulunamadı.");				
+			}
+			catch (Exception ex)
+			{
+				ExceptionSave(ex.Message, "Definition", "BlogStatus");
+				return await Task.FromResult("Beklenmedik bir hata Oluştu. Sistem Yönbeticisine Başvurunuz");
+			}
+			
+		}
+		#endregion
+
+		#region Blog Delete
+		[Route("blog-delete")]
+		public async Task<string> BlogDelete( int blogID)
+		{
+			try
+			{
+				var getBlog = _definitionDB.tblBlogMain.FirstOrDefault(x => x.BlogID == blogID);
+
+				if(getBlog != null)
+				{
+					getBlog.Deleted = true;
+					_definitionDB.SaveChanges();
+
+					LogSave(blogID, "Definition", "BlogDelete");
+					return "___";
+				}
+				else return await Task.FromResult("Bu Blog Bulunamadı.");
+			}
+			catch (Exception ex)
+			{
+				ExceptionSave(ex.Message, "Definition", "BlogDelete");
+				return await Task.FromResult("Beklenmedik bir hata Oluştu. Sistem Yönbeticisine Başvurunuz");
+			}
+		}
+		#endregion
+
+		#region Photo Upload
+		[Route("blog-file-upload")]
+		[HttpPost]
+		public async Task<string> BlogFileUpload(IFormFile photoUrl, int blogID, [FromServices] IWebHostEnvironment webHostEnvironment)
+		{
+			try
+			{
+				var getBlog = _definitionDB.tblBlogMain.FirstOrDefault(x => x.BlogID == blogID);
+
+				if (getBlog != null)
+				{
+					if (photoUrl != null && photoUrl.Length > 0)
+					{
+						var fileNameServer = Path.GetFileName(photoUrl.FileName);
+						var fileExtension = Path.GetExtension(fileNameServer);
+
+						// resim tipini kontrol ettik (jpg, jpeg, png)
+						if (fileExtension.ToLower() == ".jpg" || fileExtension.ToLower() == ".jpeg" || fileExtension.ToLower() == ".png")
+						{
+							var randomString = Path.GetRandomFileName().Replace(".", "").Substring(0, 5);
+
+							var newFileName = randomString + fileExtension;
+							var newFilePath = Path.Combine(webHostEnvironment.WebRootPath, "assets", "Upload", newFileName);
+
+							try
+							{
+								using (var stream = new FileStream(newFilePath, FileMode.Create))
+								{
+									await photoUrl.CopyToAsync(stream);
+								}
+
+								getBlog.PhotoUrl = "/assets/Upload/" + newFileName;
+
+								_definitionDB.SaveChanges();
+
+								return "___OK";
+							}
+							catch (Exception)
+							{
+								return await Task.FromResult("Dosya kaydedilirken bir hata oluştu");
+							}
+						}
+						else return await Task.FromResult("Dosya tipi desteklenmiyor. Lütfen jpg, jpeg veya png dosyası yükleyin.");
+					}
+					else return await Task.FromResult("Dosya bulunamadı.");
+				}
+				else return await Task.FromResult("Blog bulunamadı.");
+				
+			}
+			catch (Exception ex)
+			{
+				ExceptionSave(ex.Message, "Definition", "BlogFileUpload");
+				return await Task.FromResult("Beklenmedik bir hata Oluştu. Sistem Yönbeticisine Başvurunuz");
+			}
+		}
+
+
+
 		#endregion
 
 		#endregion
