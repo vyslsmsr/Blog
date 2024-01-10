@@ -15,6 +15,5 @@ namespace Blog.DATA.Function
 		public Nullable<bool> Status { get; set; }
 		public DateTime RegisterDate { get; set; }
 		public string? BlogCategorySubName { get; set; }
-		public string? TranslateControl { get; set; }
 	}
 }

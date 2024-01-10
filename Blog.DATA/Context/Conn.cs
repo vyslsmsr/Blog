@@ -38,5 +38,12 @@ namespace Blog.DATA.Context
             SqlParameter p0 = new SqlParameter();
             return this._BlogList_V.FromSqlRaw($"SELECT * FROM _BlogList()");
         }
-    }
+
+		public virtual DbSet<_BlogCategoryList_Result> _BlogCategoryList_V { get; set; }
+		public IQueryable<_BlogCategoryList_Result> _BlogCategoryList()
+		{
+			SqlParameter p0 = new SqlParameter();
+			return this._BlogCategoryList_V.FromSqlRaw($"SELECT * FROM _BlogCategoryList()");
+		}
+	}
 }

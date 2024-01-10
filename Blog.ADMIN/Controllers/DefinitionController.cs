@@ -18,7 +18,6 @@ namespace Blog.ADMIN.Controllers
 		}
         #endregion
 
-
         #region Blog
 
         #region Blog List
@@ -272,6 +271,16 @@ namespace Blog.ADMIN.Controllers
 
 		#endregion
 
+		#region Blog Category
+		[Route("blog-category")]
+		public async Task<ActionResult> BlogCategory()
+		{
+			var blogCat = _definitionDB._BlogCategoryList().ToList();
+			return await Task.FromResult(View(Tuple.Create(blogCat)));
+		}
 
+
+
+		#endregion
 	}
 }
