@@ -267,19 +267,84 @@ namespace Blog.ADMIN.Controllers
 
 
 
+        #endregion
+
+        #endregion
+
+        #region Blog Category
+
+        #region Blog Category List
+        [Route("blog-category")]
+        public async Task<ActionResult> BlogCategory()
+        {
+            var blogCat = _definitionDB._BlogCategoryList().ToList();
+            return await Task.FromResult(View(Tuple.Create(blogCat)));
+        }
+        #endregion
+
+        #region Blog Category Create Page
+        [Route("blog-category-create")]
+        public async Task<ActionResult> BlogCategoryCreate()
+        {
+            
+            return await Task.FromResult(View());
+        }
 		#endregion
 
-		#endregion
 
-		#region Blog Category
-		[Route("blog-category")]
-		public async Task<ActionResult> BlogCategory()
+		#region Blog Create Model
+		[Route("blog-category-create")]
+		[HttpPost]
+		public async Task<string> BlogCategoryCreate(BlogCategoryModel model)
 		{
-			var blogCat = _definitionDB._BlogCategoryList().ToList();
-			return await Task.FromResult(View(Tuple.Create(blogCat)));
+			try
+			{
+				var mainTbl = _definitionDB.tblBlogCategoryMain.FirstOrDefault(x => x.BlogCategoryName == model.blogCategoryName);
+
+				if (mainTbl == null)
+				{
+					tblBlogCategoryMain blogMainTbl = new tblBlogCategoryMain();
+					blogMainTbl.BlogCategoryName = model.blogCategoryName;
+					blogMainTbl.Status = true;
+					blogMainTbl.Deleted = false;
+					blogMainTbl.RegisterDate = DateTime.Now;
+
+					_definitionDB.tblBlogCategoryMain.Add(blogMainTbl);
+					_definitionDB.SaveChanges();
+
+					int blogCategoryID = _definitionDB.tblBlogCategoryMain.Max(x => x.BlogCategoryID);
+
+					if (model.blogCategorySubName != null)
+					{
+						string url = GlobalFunction.TextLinkReturning(model.url);
+
+						tblBlogCategoryContent cntTbl = new tblBlogCategoryContent();
+						cntTbl.BlogCategoryID = blogCategoryID;
+						cntTbl.BlogCategorySubName = model.blogCategorySubName;
+						cntTbl.Title = model.title;
+						cntTbl.Description = model.description;
+						cntTbl.Url = url;
+
+						_definitionDB.tblBlogCategoryContent.Add(cntTbl);
+						_definitionDB.SaveChanges();
+
+					}
+					else return await Task.FromResult("Blog Content Başlık Boş Olamaz.");
+
+					LogSave(blogCategoryID, "Definition", "BlogCategoryCreate");
+					return "___";
+				}
+				else return await Task.FromResult("Bu Blog Daha Önce Eklenmiştir.");
+
+			}
+			catch (Exception ex)
+			{
+				ExceptionSave(ex.Message, "Definition", "BlogCategoryCreate");
+				return await Task.FromResult("Beklenmedik bir hata Oluştu. Sistem Yönbeticisine Başvurunuz");
+			}
+
 		}
-
-
+		#endregion
 
 		#endregion
 	}

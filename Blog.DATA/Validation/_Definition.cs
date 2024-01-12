@@ -23,6 +23,16 @@ namespace Blog.DATA.Validation
 				public string? description { get; set; }
 				public string? url { get; set; }
 			}
+
+			public class BlogCategoryModel
+			{
+				public int blogCategoryID { get; set; }
+				public string? blogCategoryName { get; set; }
+				public string? blogCategorySubName { get; set; }
+				public string? title { get; set; }
+				public string? description { get; set; }
+				public string? url { get; set; }
+			}
 		}
 
 
