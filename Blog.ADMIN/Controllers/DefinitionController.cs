@@ -406,6 +406,58 @@ namespace Blog.ADMIN.Controllers
 		}
 		#endregion
 
+		#region Blog Category Status
+		[Route("blog-category-status")]
+		public async Task<string> BlogCategoryStatus(int blogCategoryID)
+		{
+			try
+			{
+				var getBlog = _definitionDB.tblBlogCategoryMain.FirstOrDefault(x => x.BlogCategoryID == blogCategoryID);
+
+				if (getBlog != null)
+				{
+					getBlog.Status = getBlog.Status == true ? false : true;
+					_definitionDB.SaveChanges();
+
+					LogSave(blogCategoryID, "Definition", "BlogCategoryStatus");
+					return "___";
+				}
+				else return await Task.FromResult("Bu Blog Bulunamadı.");
+			}
+			catch (Exception ex)
+			{
+				ExceptionSave(ex.Message, "Definition", "BlogCategoryStatus");
+				return await Task.FromResult("Beklenmedik bir hata Oluştu. Sistem Yönbeticisine Başvurunuz");
+			}
+
+		}
+		#endregion
+
+		#region Blog Category Delete
+		[Route("blog-category-delete")]
+		public async Task<string> BlogCategoryDelete(int blogCategoryID)
+		{
+			try
+			{
+				var getBlog = _definitionDB.tblBlogCategoryMain.FirstOrDefault(x => x.BlogCategoryID == blogCategoryID);
+
+				if (getBlog != null)
+				{
+					getBlog.Deleted = true;
+					_definitionDB.SaveChanges();
+
+					LogSave(blogCategoryID, "Definition", "BlogCategoryDelete");
+					return "___";
+				}
+				else return await Task.FromResult("Bu Blog Bulunamadı.");
+			}
+			catch (Exception ex)
+			{
+				ExceptionSave(ex.Message, "Definition", "BlogCategoryDelete");
+				return await Task.FromResult("Beklenmedik bir hata Oluştu. Sistem Yönbeticisine Başvurunuz");
+			}
+		}
+		#endregion
 
 		#endregion
 	}

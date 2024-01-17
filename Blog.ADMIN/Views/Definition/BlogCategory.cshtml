@@ -39,13 +39,13 @@
 									<td>@item.BlogCategorySubName</td>
 									<td>
 										<div class="form-switch">
-											<input class="form-check-input" type="checkbox" role="switch" onchange="blogStatus(@item.BlogCategoryID)" id="flexSwitchCheckChecked" @status>
+											<input class="form-check-input" type="checkbox" role="switch" onchange="blogCategoryStatus(@item.BlogCategoryID)" id="flexSwitchCheckChecked" @status>
 										</div>
 									</td>
 									<td>@Convert.ToDateTime(item.RegisterDate).ToShortDateString()</td>
 									<td>
 										<a href="/blog-category-update?blogCategoryID=@item.BlogCategoryID" class="btn btn-success fnt-size" title="Güncelle"><i class="fas fa-pen"></i></a>
-										<a href="javascript:void(0);" onclick="blogDelete(@item.BlogCategoryID)" class="btn btn-danger fnt-size" title="Sil"><i class="fas fa-trash"></i></a>
+										<a href="javascript:void(0);" onclick="blogCategoryDelete(@item.BlogCategoryID)" class="btn btn-danger fnt-size" title="Sil"><i class="fas fa-trash"></i></a>
 									</td>
 								</tr>
 								iRow++;
@@ -73,11 +73,11 @@
 
 	<script>
 
-		function blogStatus(blogID) {
+		function blogCategoryStatus(blogCategoryID) {
 			$.ajax({
 				type: "POST",
-				url: "/blog-status",
-				data: { blogID: blogID },
+				url: "/blog-category-status",
+				data: { blogCategoryID: blogCategoryID },
 				datatype: "html",
 				success: function (data) {
 					if (data.includes("___")) {
@@ -101,7 +101,7 @@
 			});
 		}
 
-		function blogDelete(blogID) {
+		function blogCategoryDelete(blogCategoryID) {
 			Swal.fire({
 				title: 'Emin misin?',
 				text: "Bunu geri alamazsınız!",
@@ -119,8 +119,8 @@
 					)
 					$.ajax({
 						type: "POST",
-						url: "/blog-delete",
-						data: { blogID: blogID },
+						url: "/blog-category-delete",
+						data: { blogCategoryID: blogCategoryID },
 						datatype: "html",
 						success: function (data) {
 							if (data.includes("___"))
