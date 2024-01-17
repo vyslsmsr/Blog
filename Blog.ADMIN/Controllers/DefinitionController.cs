@@ -291,8 +291,7 @@ namespace Blog.ADMIN.Controllers
         }
 		#endregion
 
-
-		#region Blog Create Model
+		#region Blog Category Create Model
 		[Route("blog-category-create")]
 		[HttpPost]
 		public async Task<string> BlogCategoryCreate(BlogCategoryModel model)
@@ -325,6 +324,7 @@ namespace Blog.ADMIN.Controllers
 						cntTbl.Description = model.description;
 						cntTbl.Url = url;
 
+
 						_definitionDB.tblBlogCategoryContent.Add(cntTbl);
 						_definitionDB.SaveChanges();
 
@@ -345,6 +345,67 @@ namespace Blog.ADMIN.Controllers
 
 		}
 		#endregion
+
+		#region Blog Update Page
+		[Route("blog-category-update")]
+		public async Task<IActionResult> BlogCategoryUpdate(int blogCategoryID)
+		{
+			var category = _definitionDB.tblBlogCategoryMain.FirstOrDefault(x => x.BlogCategoryID == blogCategoryID);
+			return await Task.FromResult(View(Tuple.Create(category)));
+		}
+		#endregion
+
+		#region Blog Category Create Model
+		[Route("blog-category-update")]
+		[HttpPost]
+		public async Task<string> BlogCategoryUpdate(BlogCategoryModel model)
+		{
+			try
+			{
+				var mainTbl = _definitionDB.tblBlogCategoryMain.FirstOrDefault(x => x.BlogCategoryID == model.blogCategoryID);
+
+				if (mainTbl != null)
+				{
+					mainTbl.BlogCategoryName = model.blogCategoryName;
+
+					_definitionDB.SaveChanges();
+
+
+					if (model.blogCategorySubName != null)
+					{
+						var cntTbl = _definitionDB.tblBlogCategoryContent.FirstOrDefault(x => x.BlogCategoryID == model.blogCategoryID);
+
+						if(cntTbl != null)
+						{
+							string url = GlobalFunction.TextLinkReturning(model.url);
+
+							cntTbl.BlogCategoryID = model.blogCategoryID;
+							cntTbl.BlogCategorySubName = model.blogCategorySubName;
+							cntTbl.Title = model.title;
+							cntTbl.Description = model.description;
+							cntTbl.Url = url;
+
+							_definitionDB.SaveChanges();
+						}						
+
+					}
+					else return await Task.FromResult("Blog Content Başlık Boş Olamaz.");
+
+					LogSave(model.blogCategoryID, "Definition", "BlogCategoryUpdate");
+					return "___";
+				}
+				else return await Task.FromResult("Bu Blog Daha Önce Eklenmiştir.");
+
+			}
+			catch (Exception ex)
+			{
+				ExceptionSave(ex.Message, "Definition", "BlogCategoryUpdate");
+				return await Task.FromResult("Beklenmedik bir hata Oluştu. Sistem Yönbeticisine Başvurunuz");
+			}
+
+		}
+		#endregion
+
 
 		#endregion
 	}

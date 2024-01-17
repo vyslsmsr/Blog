@@ -23,5 +23,12 @@ namespace Blog.ADMIN.Controllers
 			return _helperDB.tblBlogContent.FirstOrDefault(x => x.BlogID == blogID);
 		}
 		#endregion
+
+		#region Blog Category Content
+		public tblBlogCategoryContent? BlogCategoryContent(int? blogCategoryID)
+		{
+			return _helperDB.tblBlogCategoryContent.FirstOrDefault(x => x.BlogCategoryID == blogCategoryID);
+		}
+		#endregion
 	}
 }

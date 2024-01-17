@@ -1,0 +1,132 @@
+﻿@model Tuple<tblBlogCategoryMain>
+
+@{
+	var catContent = injectHelper.BlogCategoryContent(Model.Item1.BlogCategoryID);
+}
+
+@section Styles {
+	<link href="/assets/css/custom.css?v=2" rel="stylesheet" />
+}
+
+<div class="container-fluid">
+	<h1 class="h3 mb-4 text-gray-800">Blog Kategori Oluşturma</h1>
+	<div class="card shadow mb-4">
+		<div class="card-header py-3 page-title-btn">
+			<a href="/blogs" class="btn btn-primary"><i class="fas fa-undo-alt"></i> Geri Dön</a>
+		</div>
+		<div class="card-body">
+			<form action="javascript:postCreate('@Model.Item1.BlogCategoryID')" method="post" autocomplete="off">
+				<div class="row mt-3">
+					<div class="col-2">
+						<label for="blogCategoryName" class="col-form-label">Blog Kategori Adı</label>
+					</div>
+					<div class="col-10">
+						<input type="text" id="blogCategoryName" class="form-control" value="@Model.Item1.BlogCategoryName" aria-describedby="Blog Adı" maxlength="250" required>
+					</div>
+				</div>
+				<div class="form-content-title"><h5 class="font-bold">Blog Content</h5></div>
+				<div class="row mt-3">
+					<div class="col-2">
+						<label for="blogCategorySubName" class="col-form-label">Blog Kategori Adı</label>
+					</div>
+					<div class="col-10">
+						<input type="text" id="blogCategorySubName" class="form-control" value="@catContent.BlogCategorySubName" aria-describedby="Blog Adı" maxlength="250" required>
+					</div>
+				</div>
+				<div class="row mt-3">
+					<div class="col-2">
+						<label for="title" class="col-form-label">Title</label>
+					</div>
+					<div class="col-10">
+						<input type="text" id="title" class="form-control" value="@catContent.Title" aria-describedby="Title" maxlength="250" required />
+					</div>
+				</div>
+				<div class="row mt-3">
+					<div class="col-2">
+						<label for="description" class="col-form-label">Description</label>
+					</div>
+					<div class="col-10">
+						<input type="text" id="description" class="form-control" value="@catContent.Description" aria-describedby="Description" maxlength="250" required />
+					</div>
+				</div>
+				<div class="row mt-3">
+					<div class="col-2">
+						<label for="url" class="col-form-label">Url</label>
+					</div>
+					<div class="col-10">
+						<input type="text" id="url" class="form-control" aria-describedby="Url" maxlength="250" value="@catContent.Url" required disabled />
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-12">
+						<div class="form-submit-btn">
+							<button type="submit" class="btn btn-success">Güncelle</button>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+@section scripts {
+
+	<script src='https://cdn.ckeditor.com/4.12.1/standard-all/ckeditor.js'></script>
+	<script src="/assets/js/ckeditor.js"></script>
+
+	<script>
+		$(document).ready(function () {
+			$('#blogCategorySubName').on('input', function () {
+				$("#url").val($(this).val());
+			});
+		});
+
+
+		function postCreate(blogCategoryID) {
+			let blogCategoryName = $("#blogCategoryName").val();
+			let blogCategorySubName = $("#blogCategorySubName").val();
+			let title = $("#title").val();
+			let description = $("#description").val();
+			let url = $("#url").val();
+
+
+			let postData = {
+				blogCategoryID: blogCategoryID,
+				blogCategoryName: blogCategoryName,
+				blogCategorySubName: blogCategorySubName,
+				title: title,
+				description: description,
+				url: url
+			}
+
+			$.ajax({
+				type: "POST",
+				url: "/blog-category-update",
+				data: postData,
+				datatype: "html",
+				success: function (data) {
+					if (data.includes("___")) {
+						swal(
+							'İşlem Durumu',
+							'İşlem <b style="color:green;">Başarılı</b> ',
+							'success'
+						)
+						setTimeout(function () {
+							window.location.href = '/blog-category';
+						}, 2000);
+					} else {
+						swal(
+							'İşlem Durumu!',
+							'İşlem  <b style="color:red;">Başarısız</b> ',
+							'error'
+						)
+					}
+				},
+				error: function () {
+
+				}
+			});
+		}
+
+	</script>
+}

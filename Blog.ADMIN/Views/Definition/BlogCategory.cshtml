@@ -44,7 +44,7 @@
 									</td>
 									<td>@Convert.ToDateTime(item.RegisterDate).ToShortDateString()</td>
 									<td>
-										<a href="/blog-update?blogID=@item.BlogCategoryID" class="btn btn-success fnt-size" title="Güncelle"><i class="fas fa-pen"></i></a>
+										<a href="/blog-category-update?blogCategoryID=@item.BlogCategoryID" class="btn btn-success fnt-size" title="Güncelle"><i class="fas fa-pen"></i></a>
 										<a href="javascript:void(0);" onclick="blogDelete(@item.BlogCategoryID)" class="btn btn-danger fnt-size" title="Sil"><i class="fas fa-trash"></i></a>
 									</td>
 								</tr>
